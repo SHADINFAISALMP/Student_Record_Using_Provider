@@ -13,15 +13,16 @@ class StudentListGridView extends StatelessWidget {
   Widget build(BuildContext context) {
     studentController.initialize();
     return Obx(
-      ()=> GridView.builder(
+      () => GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2, // Set the number of columns here
         ),
         itemCount: studentController.studentLists.length,
         itemBuilder: (context, index) {
           final student = studentController.studentLists[index];
-      
+
           return Card(
+            color: Colors.black,
             margin: const EdgeInsets.all(10),
             elevation: 1,
             child: InkWell(
@@ -40,7 +41,10 @@ class StudentListGridView extends StatelessWidget {
                     radius: 40,
                   ),
                   const SizedBox(height: 10),
-                  Text(student.name),
+                  Text(
+                    student.name,
+                    style: TextStyle(color: Colors.white),
+                  ),
                   Text(
                     "Class: ${student.classname}",
                     style: TextStyle(color: Colors.grey),

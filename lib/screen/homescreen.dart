@@ -16,8 +16,9 @@ class HomeScreeen extends StatelessWidget {
   Widget build(BuildContext context) {
     getstudentdata();
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.black,
         title: Text(
           'STUDENT RECORD',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -43,21 +44,26 @@ class HomeScreeen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Visibility(
         visible: true, // Show the add button
         child: FloatingActionButton(
+          backgroundColor: Colors.black,
           shape: CircleBorder(),
           elevation: 2, // shadow
           onPressed: () {
             addstudent(context);
           },
-          child: Icon(Icons.add),
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
         ),
       ),
       bottomNavigationBar: Obx(
         () => BottomNavigationBar(
-          selectedItemColor: Colors.black,
+          backgroundColor: Colors.black,
+          selectedItemColor: Colors.green, unselectedItemColor: Colors.white,
           items: [
             BottomNavigationBarItem(
                 icon: Icon(Icons.grid_3x3_rounded), label: 'Grid'),

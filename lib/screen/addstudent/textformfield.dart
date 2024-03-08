@@ -16,6 +16,7 @@ class NameTextFormField extends StatelessWidget {
       keyboardType: TextInputType.name,
       controller: addcontroller.nameController,
       decoration: InputDecoration(
+        hintText: "Enter a Name",
         labelText: "Name",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
@@ -32,7 +33,6 @@ class NameTextFormField extends StatelessWidget {
   }
 }
 
-
 class NumberTextFormField extends StatelessWidget {
   const NumberTextFormField({
     super.key,
@@ -45,8 +45,10 @@ class NumberTextFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       keyboardType: TextInputType.number,
+      maxLength: 2,
       controller: addcontroller.classController,
       decoration: InputDecoration(
+        hintText: "Enter Class",
         labelText: "Class",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
@@ -76,8 +78,10 @@ class AgeTextFormField extends StatelessWidget {
     return TextFormField(
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       keyboardType: TextInputType.number,
+      maxLength: 2,
       controller: addcontroller.guardianController,
       decoration: InputDecoration(
+        hintText: "Enter Age",
         labelText: "Age",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
@@ -93,6 +97,7 @@ class AgeTextFormField extends StatelessWidget {
     );
   }
 }
+
 class MobileTextFormField extends StatelessWidget {
   const MobileTextFormField({
     super.key,
@@ -108,6 +113,7 @@ class MobileTextFormField extends StatelessWidget {
       keyboardType: TextInputType.number,
       controller: addcontroller.mobileController,
       decoration: InputDecoration(
+        hintText: "Enter Mobile Number",
         labelText: "Mobile",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),

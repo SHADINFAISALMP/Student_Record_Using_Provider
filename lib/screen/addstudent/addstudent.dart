@@ -9,19 +9,25 @@ import 'package:sqflite_10/screen/addstudent/textformfield.dart';
 class AddStudent extends StatelessWidget {
   const AddStudent({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     addcontroller.intialization();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ADD STUDENT'),
+        backgroundColor: Colors.black,
+        title: const Text(
+          'ADD STUDENT',
+          style: TextStyle(color: Colors.white),
+        ),
         actions: [
           IconButton(
             onPressed: () {
-            addcontroller.addstudentclicked(context);
+              addcontroller.addstudentclicked(context);
             },
-            icon: const Icon(Icons.save_rounded),
+            icon: const Icon(
+              Icons.save_rounded,
+              color: Colors.white,
+            ),
           )
         ],
         centerTitle: true,
@@ -52,7 +58,7 @@ class AddStudent extends StatelessWidget {
                       right: 5,
                       child: IconButton(
                         onPressed: () {
-                        addcontroller.addphoto(context, context);
+                          addcontroller.addphoto(context, context);
                         },
                         icon: const Icon(Icons.add_a_photo_outlined),
                         color: Color.fromARGB(255, 255, 255, 255),
@@ -65,7 +71,7 @@ class AddStudent extends StatelessWidget {
                 const SizedBox(height: 50),
                 // Name input field with validation
                 NameTextFormField(addcontroller: addcontroller),
-                const SizedBox(height: 20),
+                const SizedBox(height: 25),
                 // Class input field with validation
                 NumberTextFormField(addcontroller: addcontroller),
                 const SizedBox(height: 20),
@@ -83,10 +89,4 @@ class AddStudent extends StatelessWidget {
       ),
     );
   }
- 
 }
-
-
-
-
-

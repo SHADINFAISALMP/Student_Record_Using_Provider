@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sqflite_10/controllerss/dependency_injection.dart';
 import 'package:sqflite_10/database/db_functions.dart';
-import 'package:sqflite_10/screen/homescreen.dart';
+import 'package:sqflite_10/screen/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,10 +20,10 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       initialBinding: Intailization(),
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        primarySwatch: Colors.amber,
       ),
       debugShowCheckedModeBanner: false,
-      home: HomeScreeen(),
+      home: Splashscreen(),
     );
   }
 }

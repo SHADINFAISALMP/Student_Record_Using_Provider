@@ -12,19 +12,19 @@ import 'package:sqflite_10/screen/editstudent.dart';
 import 'package:sqflite_10/screen/studentdetails.dart';
 
 class StudentList extends StatelessWidget {
-   const StudentList({Key? key}) : super(key: key);
+  const StudentList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
- 
     studentController.initialize();
     return Obx(
-      ()=> ListView.builder(
+      () => ListView.builder(
         itemCount: studentController.studentLists.length,
         itemBuilder: (context, index) {
           final student = studentController.studentLists[index];
-      
+
           return Card(
+            color: Colors.black,
             margin: const EdgeInsets.all(13),
             elevation: 1,
             child: ListTile(
@@ -35,9 +35,11 @@ class StudentList extends StatelessWidget {
               ),
               title: Text(
                 student.name,
+                style: const TextStyle(color: Colors.white),
               ),
               subtitle: Text(
                 "Class: ${student.classname}",
+                style: const TextStyle(color: Colors.grey),
               ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,

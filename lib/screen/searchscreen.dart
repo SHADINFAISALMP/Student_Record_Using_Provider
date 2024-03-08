@@ -30,30 +30,44 @@ class SearchScreen extends StatelessWidget {
               ),
               Expanded(
                 child: Obx(
-                  () => ListView.builder(
-                    itemCount: studentController.filteredStudentList.length,
-                    itemBuilder: (context, index) {
-                      final finduserItem =
-                          studentController.filteredStudentList[index];
-                      return Card(
-                        elevation: 4,
-                        margin: const EdgeInsets.symmetric(vertical: 10),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundImage:
-                                FileImage(File(finduserItem.imagex)),
-                          ),
-                          title: Text(finduserItem.name),
-                          subtitle: Text('CLASS : ${finduserItem.classname}'),
-                          onTap: () {
-                            Get.to(
-                                () => StudentDetails(stdetails: finduserItem),
-                                transition: Transition.circularReveal);
-                          },
+                  () {
+                    if (studentController.filteredStudentList.isEmpty) {
+                      // Show a message when there are no search results
+                      return const Center(
+                        child: Text(
+                          'No results found',
+                          style: TextStyle(fontSize: 18),
                         ),
                       );
-                    },
-                  ),
+                    } else {
+                      return ListView.builder(
+                        itemCount: studentController.filteredStudentList.length,
+                        itemBuilder: (context, index) {
+                          final finduserItem =
+                              studentController.filteredStudentList[index];
+                          return Card(
+                            elevation: 4,
+                            margin: const EdgeInsets.symmetric(vertical: 10),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage:
+                                    FileImage(File(finduserItem.imagex)),
+                              ),
+                              title: Text(finduserItem.name),
+                              subtitle:
+                                  Text('CLASS : ${finduserItem.classname}'),
+                              onTap: () {
+                                Get.to(
+                                  () => StudentDetails(stdetails: finduserItem),
+                                  transition: Transition.circularReveal,
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  },
                 ),
               ),
             ],

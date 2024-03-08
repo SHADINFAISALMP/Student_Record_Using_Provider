@@ -12,7 +12,11 @@ class StudentDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('STUDENT DETAILS'),
+        backgroundColor: Colors.black,
+        title: const Text(
+          'STUDENT DETAILS',
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
       ),
       body: Center(
@@ -28,8 +32,8 @@ class StudentDetails extends StatelessWidget {
                       BorderRadius.circular(8), // Adjust the radius as needed
                   child: Image.file(
                     File(stdetails.imagex),
-                    width: 160,
-                    height: 160,
+                    width: 200,
+                    height: 180,
                     fit: BoxFit.cover,
                   ),
                 ),
