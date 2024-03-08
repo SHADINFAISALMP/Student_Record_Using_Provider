@@ -1,74 +1,79 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:sqflite_10/controllerss/student_controller.dart';
 import 'package:sqflite_10/database/db_functions.dart';
 import 'package:sqflite_10/database/db_model.dart';
+
 import 'package:sqflite_10/screen/editstudent.dart';
 import 'package:sqflite_10/screen/studentdetails.dart';
 
 class StudentList extends StatelessWidget {
-  const StudentList({Key? key}) : super(key: key);
+   StudentList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: studentList,
-      builder: (context, value, child) {
-        return ListView.builder(
-          itemCount: value.length,
-          itemBuilder: (context, index) {
-            final student = value[index];
-
-            return Card(
-              margin: const EdgeInsets.all(13),
-              elevation: 1,
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: FileImage(
-                    File(student.imagex),
-                  ),
+ 
+    studentController.initialize();
+    return Obx(
+      ()=> ListView.builder(
+        itemCount: studentController.studentLists.length,
+        itemBuilder: (context, index) {
+          final student = studentController.studentLists[index];
+      
+          return Card(
+            margin: const EdgeInsets.all(13),
+            elevation: 1,
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundImage: FileImage(
+                  File(student.imagex),
                 ),
-                title: Text(
-                  student.name,
-                ),
-                subtitle: Text(
-                  "Class: ${student.classname}",
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(
-                        Icons.edit,
-                        color: Colors.green,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => EditStudent(student: student),
-                        ));
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.delete,
-                        color: Colors.red,
-                      ),
-                      onPressed: () {
-                        deletestudent(context, student);
-                      },
-                    ),
-                  ],
-                ),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (ctr) => StudentDetails(stdetails: student),
-                  ));
-                },
               ),
-            );
-          },
-        );
-      },
+              title: Text(
+                student.name,
+              ),
+              subtitle: Text(
+                "Class: ${student.classname}",
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.edit,
+                      color: Colors.green,
+                    ),
+                    onPressed: () {
+                      Get.to(() => EditStudent(student: student),
+                          transition: Transition.cupertinoDialog);
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    ),
+                    onPressed: () {
+                      deletestudent(context, student);
+                    },
+                  ),
+                ],
+              ),
+              onTap: () {
+                Get.to(
+                    () => StudentDetails(
+                          stdetails: student,
+                        ),
+                    transition: Transition.circularReveal);
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 

@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:sqflite_10/controllerss/dependency_injection.dart';
 import 'package:sqflite_10/database/db_functions.dart';
 import 'package:sqflite_10/screen/homescreen.dart';
 
@@ -15,7 +17,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
+      initialBinding: Intailization(),
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),

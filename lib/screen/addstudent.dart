@@ -3,29 +3,23 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sqflite_10/controllerss/add_student_controller.dart';
 import 'package:sqflite_10/database/db_functions.dart';
 import 'package:sqflite_10/database/db_model.dart';
 
-class AddStudent extends StatefulWidget {
-  const AddStudent({super.key});
+class AddStudent extends StatelessWidget {
+  AddStudent({super.key});
 
-  @override
-  State<AddStudent> createState() => _AddStudentState();
-}
-
-class _AddStudentState extends State<AddStudent> {
-  File? image25;
-  String? imagepath;
-  final _formKey = GlobalKey<FormState>(); // Add a form key for the validation
-
-  final _nameController = TextEditingController();
-  final _classController = TextEditingController();
-  final _guardianController = TextEditingController();
-  final _mobileController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  // Add a form key for the validation
+  final addcontroller = Get.find<AddstudentController>();
 
   @override
   Widget build(BuildContext context) {
+    addcontroller.intialization();
     return Scaffold(
       appBar: AppBar(
         title: const Text('ADD STUDENT'),
@@ -33,7 +27,6 @@ class _AddStudentState extends State<AddStudent> {
           IconButton(
             onPressed: () {
               addstudentclicked(context);
-              Navigator.pop(context);
             },
             icon: const Icon(Icons.save_rounded),
           )
@@ -51,19 +44,22 @@ class _AddStudentState extends State<AddStudent> {
               children: [
                 Stack(
                   children: [
-                    CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        backgroundImage: image25 != null
-                            ? FileImage(image25!)
-                            : const AssetImage('assets/profile.png')
-                                as ImageProvider,
-                        radius: 99),
+                    Obx(
+                      () => CircleAvatar(
+                          backgroundColor: Colors.grey,
+                          backgroundImage: addcontroller
+                                  .imagepath.value.isNotEmpty
+                              ? FileImage(File(addcontroller.imagepath.value))
+                              : AssetImage('assets/profile.png')
+                                  as ImageProvider,
+                          radius: 99),
+                    ),
                     Positioned(
                       bottom: 20,
                       right: 5,
                       child: IconButton(
                         onPressed: () {
-                          addphoto(context);
+                          addphoto(context, context);
                         },
                         icon: const Icon(Icons.add_a_photo_outlined),
                         color: Color.fromARGB(255, 255, 255, 255),
@@ -78,7 +74,7 @@ class _AddStudentState extends State<AddStudent> {
                 // Name input field with validation
                 TextFormField(
                   keyboardType: TextInputType.name,
-                  controller: _nameController,
+                  controller: addcontroller.nameController,
                   decoration: InputDecoration(
                     labelText: "Name",
                     border: OutlineInputBorder(
@@ -97,8 +93,8 @@ class _AddStudentState extends State<AddStudent> {
 
                 // Class input field with validation
                 TextFormField(
-                  keyboardType: TextInputType.text,
-                  controller: _classController,
+                  keyboardType: TextInputType.number,
+                  controller: addcontroller.classController,
                   decoration: InputDecoration(
                     labelText: "Class",
                     border: OutlineInputBorder(
@@ -117,8 +113,9 @@ class _AddStudentState extends State<AddStudent> {
 
                 // Guardian input field with validation
                 TextFormField(
-                  keyboardType: TextInputType.name,
-                  controller: _guardianController,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  keyboardType: TextInputType.number,
+                  controller: addcontroller.guardianController,
                   decoration: InputDecoration(
                     labelText: "Age",
                     border: OutlineInputBorder(
@@ -137,8 +134,9 @@ class _AddStudentState extends State<AddStudent> {
 
                 // Mobile input field with validation
                 TextFormField(
+                  maxLength: 10,
                   keyboardType: TextInputType.number,
-                  controller: _mobileController,
+                  controller: addcontroller.mobileController,
                   decoration: InputDecoration(
                     labelText: "Mobile",
                     border: OutlineInputBorder(
@@ -163,23 +161,24 @@ class _AddStudentState extends State<AddStudent> {
     );
   }
 
-  Future<void> addstudentclicked(mtx) async {
-    if (_formKey.currentState!.validate() && image25 != null) {
-      final name = _nameController.text.toUpperCase();
-      final classA = _classController.text.toString().trim();
-      final father = _guardianController.text;
-      final phonenumber = _mobileController.text.trim();
+  Future<void> addstudentclicked(context) async {
+    if (_formKey.currentState!.validate() &&
+        addcontroller.imagepath.isNotEmpty) {
+      final name = addcontroller.nameController.text.toUpperCase();
+      final classA = addcontroller.classController.text.toString().trim();
+      final father = addcontroller.guardianController.text;
+      final phonenumber = addcontroller.mobileController.text.trim();
 
       final stdData = StudentModel(
         name: name,
         classname: classA,
         father: father,
         pnumber: phonenumber,
-        imagex: imagepath!,
+        imagex: addcontroller.imagepath.value,
       );
       await addstudent(stdData); // Use the correct function name addStudent.
 
-      ScaffoldMessenger.of(mtx).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Successfully added"),
           behavior: SnackBarBehavior.floating,
@@ -189,15 +188,9 @@ class _AddStudentState extends State<AddStudent> {
         ),
       );
 
-      setState(() {
-        image25 = null;
-        _nameController.clear();
-        _classController.clear();
-        _guardianController.clear();
-        _mobileController.clear();
-      });
+      Get.back();
     } else {
-      ScaffoldMessenger.of(mtx).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Add Profile Picture '),
           duration: Duration(seconds: 2),
@@ -214,13 +207,10 @@ class _AddStudentState extends State<AddStudent> {
     if (image == null) {
       return;
     }
-    setState(() {
-      image25 = File(image.path);
-      imagepath = image.path.toString();
-    });
+    addcontroller.addImage(image.path);
   }
 
-  void addphoto(ctxr) {
+  void addphoto(ctxr, context) {
     showDialog(
       context: ctxr,
       builder: (ctxr) {
@@ -230,7 +220,7 @@ class _AddStudentState extends State<AddStudent> {
             IconButton(
               onPressed: () {
                 getimage(ImageSource.camera);
-                Navigator.of(context).pop();
+                Get.back();
               },
               icon: const Icon(
                 Icons.camera_alt_rounded,
@@ -240,7 +230,7 @@ class _AddStudentState extends State<AddStudent> {
             IconButton(
               onPressed: () {
                 getimage(ImageSource.gallery);
-                Navigator.of(context).pop();
+                 Get.back();
               },
               icon: const Icon(
                 Icons.image,

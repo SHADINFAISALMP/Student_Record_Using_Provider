@@ -3,31 +3,29 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sqflite_10/controllerss/edit_controller.dart';
 import 'package:sqflite_10/database/db_functions.dart';
 import 'package:sqflite_10/database/db_model.dart';
 
-class EditStudent extends StatefulWidget {
-  final student;
+class EditStudent extends StatelessWidget {
+  StudentModel student;
 
-  const EditStudent({super.key, required this.student});
+  EditStudent({super.key, required this.student});
 
-  @override
-  State<EditStudent> createState() => _EditStudentState();
-}
+  final editcontroller = Get.find<Editcontroller>();
 
-class _EditStudentState extends State<EditStudent> {
-  String? updatedImagepath;
-
-  final _formKey = GlobalKey<FormState>(); //  form key for the validation
-
-  final _nameController = TextEditingController();
-  final _classController = TextEditingController();
-  final _guardianController = TextEditingController();
-  final _mobileController = TextEditingController();
-
+  final _formKey = GlobalKey<FormState>();
+  //  form key for the validation
   @override
   Widget build(BuildContext context) {
+    editcontroller.initialValues(
+        imagePaths: student.imagex,
+        name: student.name,
+        classname: student.classname,
+        quardianname: student.father,
+        mobilename: student.pnumber);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Student'),
@@ -36,7 +34,7 @@ class _EditStudentState extends State<EditStudent> {
             onPressed: () {
               editstudentclicked(
                 context,
-                widget.student,
+                student,
               );
             },
             icon: const Icon(Icons.cloud_upload),
@@ -57,11 +55,12 @@ class _EditStudentState extends State<EditStudent> {
                     children: [
                       InkWell(
                         onTap: () => editphoto(context),
-                        child: CircleAvatar(
-                          backgroundImage: updatedImagepath != null
-                              ? FileImage(File(updatedImagepath!))
-                              : FileImage(File(widget.student.imagex)),
-                          radius: 80,
+                        child: Obx(
+                          () => CircleAvatar(
+                            backgroundImage: FileImage(
+                                File(editcontroller.updatedImagepath.value)),
+                            radius: 80,
+                          ),
                         ),
                       ),
                     ],
@@ -77,7 +76,7 @@ class _EditStudentState extends State<EditStudent> {
                       Expanded(
                         child: TextFormField(
                           keyboardType: TextInputType.name,
-                          controller: _nameController,
+                          controller: editcontroller.editnameController,
                           decoration: InputDecoration(
                             labelText: "Name",
                             border: OutlineInputBorder(
@@ -104,8 +103,8 @@ class _EditStudentState extends State<EditStudent> {
                           width: 10), // Add spacing between icon and text field
                       Expanded(
                         child: TextFormField(
-                          keyboardType: TextInputType.text,
-                          controller: _classController,
+                          keyboardType: TextInputType.number,
+                          controller: editcontroller.editclassController,
                           decoration: InputDecoration(
                             labelText: "Class",
                             border: OutlineInputBorder(
@@ -132,8 +131,8 @@ class _EditStudentState extends State<EditStudent> {
                           width: 10), // Add spacing between icon and text field
                       Expanded(
                         child: TextFormField(
-                          keyboardType: TextInputType.name,
-                          controller: _guardianController,
+                          keyboardType: TextInputType.number,
+                          controller: editcontroller.editguardianController,
                           decoration: InputDecoration(
                             labelText: "Age",
                             border: OutlineInputBorder(
@@ -160,8 +159,9 @@ class _EditStudentState extends State<EditStudent> {
                           width: 10), // Add spacing between icon and text field
                       Expanded(
                         child: TextFormField(
+                          maxLength: 10,
                           keyboardType: TextInputType.number,
-                          controller: _mobileController,
+                          controller: editcontroller.editmobileController,
                           decoration: InputDecoration(
                             labelText: "Mobile",
                             border: OutlineInputBorder(
@@ -187,38 +187,22 @@ class _EditStudentState extends State<EditStudent> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _nameController.text = widget.student.name;
-    _classController.text = widget.student.classname;
-    _guardianController.text = widget.student.father;
-    _mobileController.text = widget.student.pnumber;
-    updatedImagepath = widget.student.imagex;
-  }
-
-  @override
-  void didUpdateWidget(covariant oldWidget) {
-    super.didUpdateWidget(oldWidget);
-  }
-
   Future<void> geterimage(ImageSource source) async {
     final image = await ImagePicker().pickImage(source: source);
     if (image == null) {
       return;
     }
-    setState(() {
-      updatedImagepath = image.path.toString();
-    });
+
+    editcontroller.updatedImagepath.value = image.path.toString();
   }
 
   Future<void> editstudentclicked(
       BuildContext context, StudentModel student) async {
     if (_formKey.currentState!.validate()) {
-      final name = _nameController.text.toUpperCase();
-      final classA = _classController.text.toString().trim();
-      final father = _guardianController.text;
-      final phonenumber = _mobileController.text.trim();
+      final name = editcontroller.editnameController.text.toUpperCase();
+      final classA = editcontroller.editclassController.text.toString().trim();
+      final father = editcontroller.editguardianController.text;
+      final phonenumber = editcontroller.editmobileController.text.trim();
 
       final updatedStudent = StudentModel(
         id: student.id,
@@ -226,7 +210,7 @@ class _EditStudentState extends State<EditStudent> {
         classname: classA,
         father: father,
         pnumber: phonenumber,
-        imagex: updatedImagepath ?? student.imagex,
+        imagex: editcontroller.updatedImagepath.value,
       );
 
       await editStudent(
@@ -241,7 +225,7 @@ class _EditStudentState extends State<EditStudent> {
       // Refresh the data in the StudentList widget.
       getstudentdata();
 
-      Navigator.of(context).pop();
+      Get.back();
     }
   }
 
@@ -260,7 +244,7 @@ class _EditStudentState extends State<EditStudent> {
                     IconButton(
                       onPressed: () {
                         geterimage(ImageSource.camera);
-                        Navigator.of(context).pop();
+                        Get.back();
                       },
                       icon: const Icon(
                         Icons.camera_alt_rounded,
@@ -274,7 +258,7 @@ class _EditStudentState extends State<EditStudent> {
                     IconButton(
                       onPressed: () {
                         geterimage(ImageSource.gallery);
-                        Navigator.of(context).pop();
+                        Get.back();
                       },
                       icon: const Icon(
                         Icons.image,

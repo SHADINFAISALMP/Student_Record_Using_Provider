@@ -1,22 +1,16 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:sqflite_10/controllerss/bottom_controller.dart';
 import 'package:sqflite_10/database/db_functions.dart';
 import 'package:sqflite_10/screen/addstudent.dart';
 import 'package:sqflite_10/screen/gridscreen.dart';
 import 'package:sqflite_10/screen/listscreeen.dart';
 import 'package:sqflite_10/screen/searchscreen.dart';
 
-class HomeScreeen extends StatefulWidget {
+class HomeScreeen extends StatelessWidget {
   const HomeScreeen({super.key});
-
-  @override
-  State<HomeScreeen> createState() => _HomeScreeenState();
-}
-
-class _HomeScreeenState extends State<HomeScreeen> {
-  int _selectedIndex = 0;
-  int _viewMode = 0; // 0 for list, 1 for grid
 
   @override
   Widget build(BuildContext context) {
@@ -31,19 +25,21 @@ class _HomeScreeenState extends State<HomeScreeen> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (ctxs) => SearchScreen()));
+              Get.to(() => SearchScreen(),
+                  transition: Transition.leftToRightWithFade);
             },
             icon: const Icon(Icons.search_rounded),
             color: Colors.white,
           )
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-              child: _viewMode == 0 ? StudentListGridView() : StudentList()),
-        ],
+      body: Obx(
+        ()=> Column(
+          children: [
+            Expanded(
+                child: bottomController.viewMode.value == 0 ? StudentListGridView() : StudentList()),
+          ],
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Visibility(
@@ -63,19 +59,16 @@ class _HomeScreeenState extends State<HomeScreeen> {
               icon: Icon(Icons.grid_3x3_rounded), label: 'Grid'),
           BottomNavigationBarItem(icon: Icon(Icons.list), label: 'List')
         ],
-        currentIndex: _selectedIndex, // go to the readme file 19 to 45
+        currentIndex: bottomController
+            .selectedIndex.value, // go to the readme file 19 to 45
         onTap: (int index) {
-          setState(() {
-            _selectedIndex = index;
-            _viewMode = index; // Set the view mode based on the tapped index
-          });
+          bottomController.changeScreen(index);
         },
       ),
     );
   }
 
   void addstudent(gtx) {
-    Navigator.of(gtx)
-        .push(MaterialPageRoute(builder: (gtx) => const AddStudent()));
+    Get.to(() => AddStudent(), transition: Transition.circularReveal);
   }
 }

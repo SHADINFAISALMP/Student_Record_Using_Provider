@@ -1,10 +1,10 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member, avoid_print, unnecessary_brace_in_string_interps, avoid_function_literals_in_foreach_calls
 
-import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_10/controllerss/student_controller.dart';
 import 'package:sqflite_10/database/db_model.dart';
 
-ValueNotifier<List<StudentModel>> studentList = ValueNotifier([]);
 late Database _db;
 Future<void> initializeDatabase() async {
   _db = await openDatabase(
@@ -18,15 +18,16 @@ Future<void> initializeDatabase() async {
   print("Database created successfully.");
 }
 
-Future<void> getstudentdata() async {
+Future<List<StudentModel>> getstudentdata() async {
   final result = await _db.rawQuery("SELECT * FROM student");
   print('All Students data : ${result}');
-  studentList.value.clear();
+
+  List<StudentModel> l1 = [];
   result.forEach((map) {
     final student = StudentModel.fromMap(map);
-    studentList.value.add(student);
+    l1.add(student);
   });
-  studentList.notifyListeners();
+  return l1;
 }
 
 Future<void> addstudent(StudentModel value) async {
@@ -36,6 +37,7 @@ Future<void> addstudent(StudentModel value) async {
       [value.name, value.classname, value.father, value.pnumber, value.imagex],
     );
     getstudentdata();
+   await Get.find<StudentController>().initialize();
   } catch (e) {
     print('Error inserting data: $e');
   }
@@ -44,6 +46,7 @@ Future<void> addstudent(StudentModel value) async {
 Future<void> deleteStudent(id) async {
   await _db.delete('student', where: 'id=?', whereArgs: [id]);
   getstudentdata();
+  await Get.find<StudentController>().initialize();
 }
 
 Future<void> editStudent(id, name, classname, father, pnumber, imagex) async {
@@ -56,4 +59,5 @@ Future<void> editStudent(id, name, classname, father, pnumber, imagex) async {
   };
   await _db.update('student', dataflow, where: 'id=?', whereArgs: [id]);
   getstudentdata();
+  await Get.find<StudentController>().initialize();
 }
