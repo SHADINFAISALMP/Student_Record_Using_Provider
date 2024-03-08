@@ -12,7 +12,7 @@ import 'package:sqflite_10/screen/editstudent.dart';
 import 'package:sqflite_10/screen/studentdetails.dart';
 
 class StudentList extends StatelessWidget {
-   StudentList({Key? key}) : super(key: key);
+   const StudentList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

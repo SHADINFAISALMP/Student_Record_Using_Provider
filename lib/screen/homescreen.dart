@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sqflite_10/controllerss/bottom_controller.dart';
 import 'package:sqflite_10/database/db_functions.dart';
-import 'package:sqflite_10/screen/addstudent.dart';
+import 'package:sqflite_10/screen/addstudent/addstudent.dart';
 import 'package:sqflite_10/screen/gridscreen.dart';
 import 'package:sqflite_10/screen/listscreeen.dart';
 import 'package:sqflite_10/screen/searchscreen.dart';
@@ -34,10 +34,12 @@ class HomeScreeen extends StatelessWidget {
         ],
       ),
       body: Obx(
-        ()=> Column(
+        () => Column(
           children: [
             Expanded(
-                child: bottomController.viewMode.value == 0 ? StudentListGridView() : StudentList()),
+                child: bottomController.viewMode.value == 0
+                    ? StudentListGridView()
+                    : StudentList()),
           ],
         ),
       ),
@@ -53,17 +55,20 @@ class HomeScreeen extends StatelessWidget {
           child: Icon(Icons.add),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.grid_3x3_rounded), label: 'Grid'),
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'List')
-        ],
-        currentIndex: bottomController
-            .selectedIndex.value, // go to the readme file 19 to 45
-        onTap: (int index) {
-          bottomController.changeScreen(index);
-        },
+      bottomNavigationBar: Obx(
+        () => BottomNavigationBar(
+          selectedItemColor: Colors.black,
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(Icons.grid_3x3_rounded), label: 'Grid'),
+            BottomNavigationBarItem(icon: Icon(Icons.list), label: 'List')
+          ],
+          currentIndex: bottomController
+              .selectedIndex.value, // go to the readme file 19 to 45
+          onTap: (int index) {
+            bottomController.changeScreen(index);
+          },
+        ),
       ),
     );
   }

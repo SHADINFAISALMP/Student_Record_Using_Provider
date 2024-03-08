@@ -9,6 +9,7 @@ import 'package:sqflite_10/controllerss/edit_controller.dart';
 import 'package:sqflite_10/database/db_functions.dart';
 import 'package:sqflite_10/database/db_model.dart';
 
+// ignore: must_be_immutable
 class EditStudent extends StatelessWidget {
   StudentModel student;
 
@@ -16,7 +17,7 @@ class EditStudent extends StatelessWidget {
 
   final editcontroller = Get.find<Editcontroller>();
 
-  final _formKey = GlobalKey<FormState>();
+ 
   //  form key for the validation
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class EditStudent extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              editstudentclicked(
+             editcontroller.editstudentclicked(
                 context,
                 student,
               );
@@ -46,7 +47,7 @@ class EditStudent extends StatelessWidget {
         child: Padding(
             padding: const EdgeInsets.all(20),
             child: Form(
-              key: _formKey, // Assign the form key
+              key:editcontroller.formKey, // Assign the form key
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -54,7 +55,7 @@ class EditStudent extends StatelessWidget {
                   Stack(
                     children: [
                       InkWell(
-                        onTap: () => editphoto(context),
+                        onTap: () =>editcontroller.editphoto(context),
                         child: Obx(
                           () => CircleAvatar(
                             backgroundImage: FileImage(
@@ -187,90 +188,5 @@ class EditStudent extends StatelessWidget {
     );
   }
 
-  Future<void> geterimage(ImageSource source) async {
-    final image = await ImagePicker().pickImage(source: source);
-    if (image == null) {
-      return;
-    }
-
-    editcontroller.updatedImagepath.value = image.path.toString();
-  }
-
-  Future<void> editstudentclicked(
-      BuildContext context, StudentModel student) async {
-    if (_formKey.currentState!.validate()) {
-      final name = editcontroller.editnameController.text.toUpperCase();
-      final classA = editcontroller.editclassController.text.toString().trim();
-      final father = editcontroller.editguardianController.text;
-      final phonenumber = editcontroller.editmobileController.text.trim();
-
-      final updatedStudent = StudentModel(
-        id: student.id,
-        name: name,
-        classname: classA,
-        father: father,
-        pnumber: phonenumber,
-        imagex: editcontroller.updatedImagepath.value,
-      );
-
-      await editStudent(
-        student.id!,
-        updatedStudent.name,
-        updatedStudent.classname,
-        updatedStudent.father,
-        updatedStudent.pnumber,
-        updatedStudent.imagex,
-      );
-
-      // Refresh the data in the StudentList widget.
-      getstudentdata();
-
-      Get.back();
-    }
-  }
-
-  void editphoto(ctxr) {
-    showDialog(
-      context: ctxr,
-      builder: (ctxr) {
-        return AlertDialog(
-          title: const Text('Update Photo '),
-          actions: [
-            Column(
-              children: [
-                Row(
-                  children: [
-                    Text('Choose from camera'),
-                    IconButton(
-                      onPressed: () {
-                        geterimage(ImageSource.camera);
-                        Get.back();
-                      },
-                      icon: const Icon(
-                        Icons.camera_alt_rounded,
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text('Choose from gallery '),
-                    IconButton(
-                      onPressed: () {
-                        geterimage(ImageSource.gallery);
-                        Get.back();
-                      },
-                      icon: const Icon(
-                        Icons.image,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
+  
 }

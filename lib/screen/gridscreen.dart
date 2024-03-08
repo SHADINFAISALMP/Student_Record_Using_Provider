@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sqflite_10/controllerss/student_controller.dart';
-import 'package:sqflite_10/database/db_functions.dart';
 import 'package:sqflite_10/screen/studentdetails.dart';
 
 class StudentListGridView extends StatelessWidget {

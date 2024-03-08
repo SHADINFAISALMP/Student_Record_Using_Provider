@@ -20,10 +20,6 @@ class StudentDetails extends StatelessWidget {
           height: 400,
           width: 400,
           child: SizedBox(
-            // margin: const EdgeInsets.all(20),
-            // shape:
-            // RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-            // elevation: 10,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
