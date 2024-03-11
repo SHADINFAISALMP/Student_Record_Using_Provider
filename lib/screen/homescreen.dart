@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:sqflite_10/controllerss/bottom_controller.dart';
-import 'package:sqflite_10/database/db_functions.dart';
+
 import 'package:sqflite_10/screen/addstudent/addstudent.dart';
 import 'package:sqflite_10/screen/gridscreen.dart';
 import 'package:sqflite_10/screen/listscreeen.dart';

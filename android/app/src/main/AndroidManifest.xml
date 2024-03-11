@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="Student Record GetX"
+        android:label="Student Record Provider"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
