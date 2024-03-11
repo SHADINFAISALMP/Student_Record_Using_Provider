@@ -3,7 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:sqflite_10/controllerss/student_controller.dart';
 import 'package:sqflite_10/database/db_functions.dart';
 import 'package:sqflite_10/database/db_model.dart';
@@ -16,9 +16,10 @@ class StudentList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    studentController.initialize();
-    return Obx(
-      () => ListView.builder(
+   // final studentController = Provider.of<StudentController>(context);
+  Provider.of<StudentController>(context).initialize();
+    return Consumer<StudentController>(
+  builder: (context, studentController, child) =>  ListView.builder(
         itemCount: studentController.studentLists.length,
         itemBuilder: (context, index) {
           final student = studentController.studentLists[index];
@@ -50,8 +51,8 @@ class StudentList extends StatelessWidget {
                       color: Colors.green,
                     ),
                     onPressed: () {
-                      Get.to(() => EditStudent(student: student),
-                          transition: Transition.cupertinoDialog);
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => EditStudent(student: student)));
                     },
                   ),
                   IconButton(
@@ -66,11 +67,8 @@ class StudentList extends StatelessWidget {
                 ],
               ),
               onTap: () {
-                Get.to(
-                    () => StudentDetails(
-                          stdetails: student,
-                        ),
-                    transition: Transition.circularReveal);
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => StudentDetails(stdetails: student)));
               },
             ),
           );
@@ -90,6 +88,7 @@ class StudentList extends StatelessWidget {
             TextButton(
               onPressed: () {
                 delectYes(context, student);
+            
               },
               child: const Text('Yes'),
             ),
@@ -106,7 +105,7 @@ class StudentList extends StatelessWidget {
   }
 
   void delectYes(ctx, StudentModel student) {
-    deleteStudent(student.id!);
+    deleteStudent(student.id!,ctx);
     ScaffoldMessenger.of(ctx).showSnackBar(
       const SnackBar(
         content: Text("Successfully Deleted"),

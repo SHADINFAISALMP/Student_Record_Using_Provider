@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+
+import 'package:provider/provider.dart';
 import 'package:sqflite_10/controllerss/student_controller.dart';
 import 'package:sqflite_10/screen/studentdetails.dart';
 
@@ -10,7 +11,8 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    studentController.getSearchResults("");
+  Provider.of<StudentController>(context,listen: false).getSearchResults("");
+  
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -21,7 +23,8 @@ class SearchScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: TextField(
                   onChanged: (value) =>
-                      studentController.getSearchResults(value),
+                 
+                      context.read<StudentController>().getSearchResults(value),
                   decoration: const InputDecoration(
                     labelText: 'Search',
                     suffixIcon: Icon(Icons.search),
@@ -29,8 +32,8 @@ class SearchScreen extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: Obx(
-                  () {
+                child: Consumer<StudentController>(
+                 builder: (context, studentController, child)  {
                     if (studentController.filteredStudentList.isEmpty) {
                       // Show a message when there are no search results
                       return const Center(
@@ -57,10 +60,9 @@ class SearchScreen extends StatelessWidget {
                               subtitle:
                                   Text('CLASS : ${finduserItem.classname}'),
                               onTap: () {
-                                Get.to(
-                                  () => StudentDetails(stdetails: finduserItem),
-                                  transition: Transition.circularReveal,
-                                );
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => StudentDetails(
+                                        stdetails: finduserItem)));
                               },
                             ),
                           );

@@ -1,6 +1,7 @@
 // ignore_for_file: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member, avoid_print, unnecessary_brace_in_string_interps, avoid_function_literals_in_foreach_calls
 
-import 'package:get/get.dart';
+
+import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_10/controllerss/student_controller.dart';
 import 'package:sqflite_10/database/db_model.dart';
@@ -30,26 +31,26 @@ Future<List<StudentModel>> getstudentdata() async {
   return l1;
 }
 
-Future<void> addstudent(StudentModel value) async {
+Future<void> addstudent(StudentModel value , context) async {
   try {
     await _db.rawInsert(
       'INSERT INTO student(name,classname,father,pnumber,imagex) VALUES(?,?,?,?,?)',
       [value.name, value.classname, value.father, value.pnumber, value.imagex],
     );
     getstudentdata();
-   await Get.find<StudentController>().initialize();
+   await Provider.of<StudentController>(context).initialize();
   } catch (e) {
     print('Error inserting data: $e');
   }
 }
 
-Future<void> deleteStudent(id) async {
+Future<void> deleteStudent(id,context) async {
   await _db.delete('student', where: 'id=?', whereArgs: [id]);
   getstudentdata();
-  await Get.find<StudentController>().initialize();
+  await Provider.of<StudentController>(context).initialize();
 }
 
-Future<void> editStudent(id, name, classname, father, pnumber, imagex) async {
+Future<void> editStudent(id, name, classname, father, pnumber, imagex ,context) async {
   final dataflow = {
     'name': name,
     'classname': classname,
@@ -59,5 +60,5 @@ Future<void> editStudent(id, name, classname, father, pnumber, imagex) async {
   };
   await _db.update('student', dataflow, where: 'id=?', whereArgs: [id]);
   getstudentdata();
-  await Get.find<StudentController>().initialize();
+ await Provider.of<StudentController>(context).initialize();
 }

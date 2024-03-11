@@ -1,26 +1,28 @@
-import 'package:get/get.dart';
+import 'package:flutter/material.dart';
+
 import 'package:sqflite_10/database/db_functions.dart';
 import 'package:sqflite_10/database/db_model.dart';
 
-class StudentController extends GetxController {
-  RxList<StudentModel> studentLists = <StudentModel>[].obs;
-  RxList<StudentModel> filteredStudentList = <StudentModel>[].obs;
+class StudentController extends ChangeNotifier {
+  List<StudentModel> studentLists = <StudentModel>[];
+  List<StudentModel> filteredStudentList = <StudentModel>[];
   initialize() async {
     var s1 = await getstudentdata();
-    studentLists.value = s1;
+    studentLists = s1;
+    notifyListeners();
   }
 
   getSearchResults(String query) async {
     await initialize();
     if (query.isEmpty) {
-      filteredStudentList.value = studentLists;
+      filteredStudentList = studentLists;
     } else {
       List<StudentModel> s = studentLists
-          .where((element) => element.name.toLowerCase().contains(query.toLowerCase()) )
+          .where((element) =>
+              element.name.toLowerCase().contains(query.toLowerCase()))
           .toList();
-      filteredStudentList.value = s;
+      filteredStudentList = s;
     }
+       notifyListeners();
   }
 }
-
-var studentController = Get.find<StudentController>();

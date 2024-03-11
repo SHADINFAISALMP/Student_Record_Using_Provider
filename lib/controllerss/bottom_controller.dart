@@ -1,13 +1,16 @@
-import 'package:get/get.dart';
 
-class BottomController extends GetxController {
-  RxInt selectedIndex = 0.obs;
-  RxInt viewMode = 0.obs;
+
+import 'package:flutter/material.dart';
+
+class BottomController extends ChangeNotifier{
+  int selectedIndex = 0;
+  int viewMode = 0;
 
   changeScreen(int value) {
-    selectedIndex.value = value;
-    viewMode.value = value;
-  }
+    selectedIndex = value;
+    viewMode = value;
+    notifyListeners();
+  
 }
 
-final bottomController = Get.find<BottomController>();
+}

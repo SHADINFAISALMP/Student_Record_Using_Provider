@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:sqflite_10/database/db_functions.dart';
 import 'package:sqflite_10/database/db_model.dart';
 
-class AddstudentController extends GetxController {
+class AddstudentController extends ChangeNotifier {
   final formKey = GlobalKey<FormState>();
   // RxFile? image25 ="".obs;
-  RxString imagepath = "".obs;
+  String imagepath = "";
 
   addImage(String image) {
-    imagepath.value = image;
+    imagepath = image;
+    notifyListeners();
   }
 
   final nameController = TextEditingController();
@@ -19,14 +20,15 @@ class AddstudentController extends GetxController {
   final mobileController = TextEditingController();
 
   intialization() {
-    imagepath.value = "";
+    imagepath = "";
     nameController.clear();
     classController.clear();
     guardianController.clear();
     mobileController.clear();
   }
 
-  Future<void> addstudentclicked(context) async {
+  Future<void> addstudentclicked(context,AddstudentController addcontroller) async {
+   
     if (formKey.currentState!.validate() &&
         addcontroller.imagepath.isNotEmpty) {
       final name = addcontroller.nameController.text.toUpperCase();
@@ -39,9 +41,9 @@ class AddstudentController extends GetxController {
         classname: classA,
         father: father,
         pnumber: phonenumber,
-        imagex: addcontroller.imagepath.value,
+        imagex: addcontroller.imagepath,
       );
-      await addstudent(stdData); // Use the correct function name addStudent.
+      await addstudent(stdData,context); // Use the correct function name addStudent.
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -53,7 +55,7 @@ class AddstudentController extends GetxController {
         ),
       );
 
-      Get.back();
+      Navigator.of(context).pop();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -66,15 +68,17 @@ class AddstudentController extends GetxController {
       );
     }
   }
-   Future<void> getimage(ImageSource source) async {
+
+  Future<void> getimage(ImageSource source,AddstudentController addstudentController) async {
+     
     final image = await ImagePicker().pickImage(source: source);
     if (image == null) {
       return;
     }
-    addcontroller.addImage(image.path);
+    addstudentController.addImage(image.path);
   }
 
-  void addphoto(ctxr, context) {
+  void addphoto(ctxr, context,AddstudentController provider) {
     showDialog(
       context: ctxr,
       builder: (ctxr) {
@@ -83,8 +87,8 @@ class AddstudentController extends GetxController {
           actions: [
             IconButton(
               onPressed: () {
-                getimage(ImageSource.camera);
-                Get.back();
+                getimage(ImageSource.camera,provider);
+                Navigator.of(context).pop();
               },
               icon: const Icon(
                 Icons.camera_alt_rounded,
@@ -93,8 +97,8 @@ class AddstudentController extends GetxController {
             ),
             IconButton(
               onPressed: () {
-                getimage(ImageSource.gallery);
-                 Get.back();
+                getimage(ImageSource.gallery,provider);
+                Navigator.of(context).pop();
               },
               icon: const Icon(
                 Icons.image,
@@ -107,5 +111,3 @@ class AddstudentController extends GetxController {
     );
   }
 }
-
-final addcontroller = Get.find<AddstudentController>();

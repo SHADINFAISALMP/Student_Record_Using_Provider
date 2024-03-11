@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:sqflite_10/database/db_functions.dart';
 import 'package:sqflite_10/database/db_model.dart';
 
-class Editcontroller extends GetxController {
+class Editcontroller extends ChangeNotifier {
   final formKey = GlobalKey<FormState>();
-  RxString updatedImagepath = "".obs;
+  String updatedImagepath = "";
   final editnameController = TextEditingController();
   final editclassController = TextEditingController();
   final editguardianController = TextEditingController();
   final editmobileController = TextEditingController();
   addImage(String image) {
-    updatedImagepath.value = image;
+    updatedImagepath = image;
+    notifyListeners();
   }
 
   void initialValues({
@@ -25,24 +23,24 @@ class Editcontroller extends GetxController {
     required String quardianname,
     required String mobilename,
   }) {
-    updatedImagepath.value = imagePaths;
+    updatedImagepath = imagePaths;
     editnameController.text = name;
     editclassController.text = classname;
     editguardianController.text = quardianname;
     editmobileController.text = mobilename;
   }
 
-  Future<void> geterimage(ImageSource source) async {
+  Future<void> geterimage(
+      ImageSource source, Editcontroller editcontroller) async {
     final image = await ImagePicker().pickImage(source: source);
     if (image == null) {
       return;
     }
-
-    editcontroller.updatedImagepath.value = image.path.toString();
+    editcontroller.addImage(image.path);
   }
 
-  Future<void> editstudentclicked(
-      BuildContext context, StudentModel student) async {
+  Future<void> editstudentclicked(BuildContext context, StudentModel student,
+      Editcontroller editcontroller) async {
     if (formKey.currentState!.validate()) {
       final name = editcontroller.editnameController.text.toUpperCase();
       final classA = editcontroller.editclassController.text.toString().trim();
@@ -55,26 +53,25 @@ class Editcontroller extends GetxController {
         classname: classA,
         father: father,
         pnumber: phonenumber,
-        imagex: editcontroller.updatedImagepath.value,
+        imagex: editcontroller.updatedImagepath,
       );
-
+  Navigator.of(context).pop();
       await editStudent(
-        student.id!,
-        updatedStudent.name,
-        updatedStudent.classname,
-        updatedStudent.father,
-        updatedStudent.pnumber,
-        updatedStudent.imagex,
-      );
-
+          updatedStudent.id!,
+          updatedStudent.name,
+          updatedStudent.classname,
+          updatedStudent.father,
+          updatedStudent.pnumber,
+          updatedStudent.imagex,
+          context);
+   
       // Refresh the data in the StudentList widget.
-      getstudentdata();
-
-      Get.back();
+      //   await getstudentdata();
+    
     }
   }
 
-  void editphoto(ctxr) {
+  void editphoto(ctxr, Editcontroller editStudent) {
     showDialog(
       context: ctxr,
       builder: (ctxr) {
@@ -88,8 +85,8 @@ class Editcontroller extends GetxController {
                     Text('Choose from camera'),
                     IconButton(
                       onPressed: () {
-                        geterimage(ImageSource.camera);
-                        Get.back();
+                        geterimage(ImageSource.camera, editStudent);
+                        Navigator.of(ctxr).pop();
                       },
                       icon: const Icon(
                         Icons.camera_alt_rounded,
@@ -102,8 +99,8 @@ class Editcontroller extends GetxController {
                     const Text('Choose from gallery '),
                     IconButton(
                       onPressed: () {
-                        geterimage(ImageSource.gallery);
-                        Get.back();
+                        geterimage(ImageSource.gallery, editStudent);
+                        Navigator.of(ctxr).pop();
                       },
                       icon: const Icon(
                         Icons.image,
@@ -119,5 +116,3 @@ class Editcontroller extends GetxController {
     );
   }
 }
-
-final editcontroller = Get.find<Editcontroller>();

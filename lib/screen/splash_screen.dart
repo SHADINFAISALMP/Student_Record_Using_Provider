@@ -6,14 +6,13 @@ class Splashscreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Using Future.delayed to wait for 2 seconds
     Future.delayed(const Duration(seconds: 2), () {
-      // Navigating to the HomePage after the delay
+     
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) =>
-              const HomeScreeen(), // Replace with your actual HomePage
+              const HomeScreeen(),
         ),
       );
     });
